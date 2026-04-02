@@ -2,13 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador de Estructura de Comunidades - UNJu</title>
+    <title>TP3: Biodiversidad - Cátedra de Ética y Sostenibilidad Ambiental</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .perfil-container { height: 500px; border-bottom: 8px solid #3e2723; position: relative; background: linear-gradient(to bottom, #d1e9ff, #ffffff); overflow: hidden; }
         .estrato-line { position: absolute; width: 100%; border-top: 1px dashed #a0aec0; font-size: 12px; color: #4a5568; padding-left: 15px; z-index: 1; pointer-events: none; }
         .planta { position: absolute; bottom: 0; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 2; }
-        .conector { position: absolute; bottom: 0; width: 2px; background: #4a3728; opacity: 0.6; z-index: 1; }
     </style>
 </head>
 <body class="bg-slate-50 p-6 font-sans text-slate-800">
@@ -16,12 +15,13 @@
     <div class="max-w-7xl mx-auto bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-emerald-100 pb-6 mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-black text-emerald-900 tracking-tight">ECO-SIMULADOR ESTRUCTURAL</h1>
-                <p class="text-emerald-600 font-medium">Cátedra de Ecología - Facultad de Ciencias Agrarias</p>
+                <h1 class="text-4xl font-black text-emerald-900 tracking-tight">TP3: Biodiversidad</h1>
+                <p class="text-xl text-emerald-700 font-medium">Cátedra de Ética y Sostenibilidad Ambiental</p>
+                <p class="text-sm text-slate-500 mt-1">Simulador Estructural de Comunidades (Modelo Dansereau)</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="cargarFichaA()" class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg hover:-translate-y-1">CARGAR FICHA A (BOSQUE)</button>
-                <button onclick="cargarFichaB()" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg hover:-translate-y-1">CARGAR FICHA B (CAÑA)</button>
+                <button onclick="cargarFichaA()" class="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg hover:-translate-y-1">CARGAR FICHA A (BOSQUE NATIVO)</button>
+                <button onclick="cargarFichaB()" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg hover:-translate-y-1">CARGAR FICHA B (CULTIVO CAÑA)</button>
             </div>
         </header>
 
@@ -36,7 +36,7 @@
                     <button onclick="agregarFila()" class="w-full mt-4 py-2 text-sm font-semibold text-emerald-700 border-2 border-dashed border-emerald-300 rounded-lg hover:bg-emerald-50 transition">+ Añadir Especie</button>
                 </div>
                 
-                <button onclick="procesar()" class="w-full bg-emerald-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-black transition transform active:scale-95">GENERAR PERFIL</button>
+                <button onclick="procesar()" class="w-full bg-emerald-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-black transition transform active:scale-95">GENERAR PERFIL VISUAL</button>
             </div>
 
             <div class="lg:col-span-3 space-y-6">
@@ -68,17 +68,23 @@
                 </div>
             </div>
         </div>
+        
+        <footer class="mt-12 pt-6 border-t text-center text-slate-500 text-sm">
+            <p>Este simulador es una herramienta pedagógica para visualizar cómo la estructura vertical de la vegetación influye en los índices de biodiversidad.</p>
+            <p class="font-bold text-emerald-700">Relación Ética: La simplificación estructural (Ficha B) reduce nichos ecológicos y resiliencia sistémica.</p>
+        </footer>
     </div>
 
 <script>
+// CLASIFICACIÓN DE DIBUJOS/ICONOS POR ESTRATO
 const ESTRATOS = {
-    'EME': { h: '85%', icon: '🌳', label: 'Emergente' },
-    'DOS': { h: '70%', icon: '🌳', label: 'Dosel' },
-    'MED': { h: '50%', icon: '🌲', label: 'Medio' },
-    'ARB': { h: '30%', icon: '🌿', label: 'Arbustivo' },
-    'HER': { h: '10%', icon: '🌱', label: 'Herbáceo' },
-    'APO': { h: '55%', icon: '🌸', label: 'Apoyo' },
-    'CON': { h: '80%', icon: '➰', label: 'Conector' }
+    'EME': { h: '85%', icon: '🌲', label: 'Emergente', size: '55px' }, // Pino/Conífera alta
+    'DOS': { h: '70%', icon: '🌳', label: 'Dosel', size: '45px' },     // Árbol frondoso
+    'MED': { h: '50%', icon: '🌴', label: 'Medio', size: '35px' },     // Palmera/Árbol mediano
+    'ARB': { h: '30%', icon: '🌿', label: 'Arbustivo', size: '28px' },  // Arbusto/Hoja
+    'HER': { h: '10%', icon: '🌱', label: 'Herbáceo', size: '18px' },   // Plántula
+    'APO': { h: '55%', icon: '🌸', label: 'Apoyo', size: '25px' },      // Flor (Epífita)
+    'CON': { h: '80%', icon: '🧶', label: 'Conector', size: '30px' }   // Ovillo/Liana
 };
 
 function agregarFila(nombre='', cantidad='', tipo='HER') {
@@ -86,95 +92,115 @@ function agregarFila(nombre='', cantidad='', tipo='HER') {
     const div = document.createElement('div');
     div.className = "bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-2";
     div.innerHTML = `
-        <input type="text" value="${nombre}" placeholder="Especie" class="n-sp font-bold text-sm outline-none border-b border-transparent focus:border-emerald-300 w-full">
+        <input type="text" value="${nombre}" placeholder="Nombre de Especie" class="n-sp font-bold text-sm outline-none border-b border-transparent focus:border-emerald-300 w-full">
         <div class="flex justify-between items-center gap-2">
             <input type="number" value="${cantidad}" placeholder="Cant" class="c-sp text-sm w-16 bg-slate-50 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-emerald-400">
-            <select class="t-sp text-[10px] uppercase font-bold bg-slate-50 rounded px-1 py-1 outline-none">
-                <option value="EME" ${tipo==='EME'?'selected':''}>Árbol Emergente</option>
-                <option value="DOS" ${tipo==='DOS'?'selected':''}>Árbol Dosel</option>
-                <option value="MED" ${tipo==='MED'?'selected':''}>Estrato Medio</option>
-                <option value="ARB" ${tipo==='ARB'?'selected':''}>Arbustivo/Caña</option>
-                <option value="HER" ${tipo==='HER'?'selected':''}>Herbáceo/Suelo</option>
-                <option value="APO" ${tipo==='APO'?'selected':''}>Org. Apoyo</option>
-                <option value="CON" ${tipo==='CON'?'selected':''}>Conector Vert.</option>
+            <select class="t-sp text-[10px] uppercase font-bold bg-slate-50 rounded px-1 py-1 outline-none w-full">
+                <option value="EME" ${tipo==='EME'?'selected':''}>Árbol Emergente (Dosel)</option>
+                <option value="DOS" ${tipo==='DOS'?'selected':''}>Árbol de Dosel</option>
+                <option value="MED" ${tipo==='MED'?'selected':''}>Árbol Estrato Medio</option>
+                <option value="ARB" ${tipo==='ARB'?'selected':''}>Estrato Arbustivo/Caña</option>
+                <option value="HER" ${tipo==='HER'?'selected':''}>Estrato Herbáceo/Suelo</option>
+                <option value="APO" ${tipo==='APO'?'selected':''}>Organismo de Apoyo</option>
+                <option value="CON" ${tipo==='CON'?'selected':''}>Conector Vertical</option>
             </select>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-rose-300 hover:text-rose-600">✕</button>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-rose-300 hover:text-rose-600 pl-1">✕</button>
         </div>
     `;
     contenedor.prepend(div);
 }
 
+// CARGA AUTOMÁTICA DE LA FICHA A (BOSQUE NATIVO)
 function cargarFichaA() {
     document.getElementById('inputs').innerHTML = '';
-    agregarFila('Cebil Colorado', 5, 'EME');
-    agregarFila('Tipa Blanca', 4, 'DOS');
-    agregarFila('Tarco', 3, 'DOS');
-    agregarFila('Lanza Blanca', 8, 'MED');
-    agregarFila('Helechos nativos', 15, 'HER');
-    agregarFila('Orquídeas', 6, 'APO');
+    // Usamos los iconos específicos definidos en ESTRATOS
+    agregarFila('Cebil Colorado (Emergente)', 5, 'EME'); 
+    agregarFila('Tipa Blanca (Dosel)', 4, 'DOS');
+    agregarFila('Tarco (Dosel)', 3, 'DOS');
+    agregarFila('Lanza Blanca (Medio)', 8, 'MED');
+    agregarFila('Helechos nativos (Suelo)', 15, 'HER');
+    agregarFila('Orquídeas (Epífita)', 6, 'APO');
     agregarFila('Lianas/Enredaderas', 4, 'CON');
-    procesar();
+    procesar(); // Ejecutar simulación inmediatamente
 }
 
+// CARGA AUTOMÁTICA DE LA FICHA B (CULTIVO DE CAÑA)
 function cargarFichaB() {
     document.getElementById('inputs').innerHTML = '';
-    agregarFila('Caña de Azúcar', 180, 'ARB');
-    agregarFila('Cebollín', 12, 'HER');
-    agregarFila('Gramilla', 8, 'HER');
-    agregarFila('Yuyo Colorado', 3, 'HER');
-    procesar();
+    // Predomina el estrato arbustivo (Caña) y herbáceo (malezas)
+    agregarFila('Caña de Azúcar (Monocultivo)', 180, 'ARB'); // Usará icono 🌿
+    agregarFila('Cebollín (Maleza)', 12, 'HER');             // Usará icono 🌱
+    agregarFila('Gramilla (Maleza)', 8, 'HER');
+    agregarFila('Yuyo Colorado (Maleza)', 3, 'HER');
+    procesar(); // Ejecutar simulación inmediatamente
 }
 
 function procesar() {
     const canvas = document.getElementById('canvas');
-    canvas.querySelectorAll('.planta, .conector').forEach(el => el.remove());
+    // Limpiar dibujos anteriores
+    canvas.querySelectorAll('.planta').forEach(el => el.remove());
 
     const nombres = document.querySelectorAll('.n-sp');
     const cants = document.querySelectorAll('.c-sp');
     const tipos = document.querySelectorAll('.t-sp');
 
-    let N = 0; let lista = [];
+    let N = 0; 
+    let listaEspecies = [];
+    
+    // Leer inputs
     cants.forEach((c, i) => {
         let cant = parseInt(c.value) || 0;
         if(cant > 0) {
             N += cant;
-            lista.push({ n: cant, t: tipos[i].value });
+            listaEspecies.push({ n: cant, t: tipos[i].value, name: nombres[i].value });
         }
     });
 
-    let S = lista.length;
+    // Cálculos de Biodiversidad
+    let S = listaEspecies.length;
     let D = 0;
-    lista.forEach(sp => { D += Math.pow(sp.n / N, 2); });
+    listaEspecies.forEach(sp => { 
+        let pi = sp.n / N;
+        D += Math.pow(pi, 2); 
+    });
     let E = S > 0 ? (1/D) / S : 0;
 
+    // Actualizar Dashboard numérico
     document.getElementById('res-s').innerText = S;
     document.getElementById('res-n').innerText = N;
     document.getElementById('res-d').innerText = D.toFixed(3);
     document.getElementById('res-e').innerText = E.toFixed(3);
 
-    lista.forEach(sp => {
-        let visual = Math.min(sp.n, 15);
-        for(let i=0; i<visual; i++) {
-            const config = ESTRATOS[sp.t];
-            const p = document.createElement('div');
-            p.className = "planta";
-            p.style.left = (Math.random() * 90 + 5) + '%';
-            p.style.height = config.h;
+    // Dibujar Perfil Visual (Dansereau modificado)
+    listaEspecies.forEach(sp => {
+        // Limitamos visualmente para no saturar (máx 15 figuras por especie)
+        let numFigurasVisuales = Math.min(sp.n, 15);
+        
+        for(let i=0; i<numFigurasVisuales; i++) {
+            const configEstrato = ESTRATOS[sp.t];
+            const plantaElemento = document.createElement('div');
+            plantaElemento.className = "planta";
             
-            let size = sp.t === 'EME' ? '50px' : (sp.t === 'DOS' ? '40px' : '25px');
-            if(sp.t === 'HER') size = '15px';
+            // Posicionamiento aleatorio horizontal (evitando bordes)
+            plantaElemento.style.left = (Math.random() * 90 + 5) + '%';
+            // Altura definida por el estrato
+            plantaElemento.style.height = configEstrato.h;
             
-            p.innerHTML = `<span style="font-size:${size}">${config.icon}</span>`;
-            canvas.appendChild(p);
-
+            // Estilo específico del icono
+            plantaElemento.innerHTML = `<span style="font-size:${configEstrato.size}">${configEstrato.icon}</span>`;
+            
+            // Tratamiento especial para Conectores (Lianas) para que crucen estratos
             if(sp.t === 'CON') {
-                p.innerHTML = `<div style="height:100%; border-left: 2px dashed #4a3728; width:2px"></div>`;
+                plantaElemento.innerHTML = `<div style="height:100%; border-left: 2px dashed #4a3728; width:2px;"></div>
+                                           <span style="font-size:20px; position:absolute; top:10%;">${configEstrato.icon}</span>`;
             }
+            
+            canvas.appendChild(plantaElemento);
         }
     });
 }
 
-// Fila inicial
+// Iniciar con una fila de ejemplo vacía
 agregarFila();
 </script>
 </body>
