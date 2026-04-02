@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Biodiversidad - Cátedra de Ecología</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .perfil-container { height: 300px; border-bottom: 4px solid #4a5568; position: relative; background: #f7fafc; }
+        .estrato { position: absolute; width: 100%; border-top: 1px dashed #cbd5e0; font-size: 10px; color: #a0aec0; padding-left: 5px; }
+        .planta { position: absolute; bottom: 0; transition: all 0.5s; text-align: center; }
+    </style>
+</head>
+<body class="bg-gray-100 p-5 font-sans">
+
+    <div class="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+        <h1 class="text-3xl font-bold text-green-700 mb-2">Simulador de Estructura de Comunidad</h1>
+        <p class="text-gray-600 mb-6 border-b pb-4">Basado en <b>Smith & Smith</b> y el perfil fisionómico de <b>Dansereau</b>.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Panel de Entrada -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="font-bold mb-4 text-lg text-gray-700">Ingreso de Datos (Ficha)</h2>
+                <div id="inputs">
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" placeholder="Nombre Especie" class="nombre-sp border p-2 rounded w-1/2">
+                        <input type="number" placeholder="Cant." class="cant-sp border p-2 rounded w-1/4">
+                        <select class="tipo-sp border p-2 rounded w-1/4">
+                            <option value="T">Árbol (T)</option>
+                            <option value="F">Arbusto (F)</option>
+                            <option value="H">Hierba (H)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="agregarFila()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+ Agregar Especie</button>
+                <button onclick="simular()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 w-full uppercase tracking-wider">Calcular y Simular</button>
+            </div>
+
+            <!-- Panel de Resultados Matemáticos -->
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h2 class="font-bold mb-4 text-lg text-green-800">Resultados (Atributos)</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-3 rounded shadow-sm text-center">
+                        <span class="block text-sm text-gray-500">Riqueza (S)</span>
+                        <b id="res-s" class="text-2xl text-green-700">0</b>
+                    </div>
+                    <div class="bg-white p-3 rounded shadow-sm text-center">
+                        <span class="block text-sm text-gray-500">Total (N)</span>
+                        <b id="res-n" class="text-2xl text-green-700">0</b>
+                    </div>
+                    <div class="bg-white p-3 rounded shadow-sm text-center">
+                        <span class="block text-sm text-gray-500">Dominancia (D)</span>
+                        <b id="res-d" class="text-2xl text-red-600">0.00</b>
+                    </div>
+                    <div class="bg-white p-3 rounded shadow-sm text-center">
+                        <span class="block text-sm text-gray-500">Equidad (E)</span>
+                        <b id="res-e" class="text-2xl text-blue-600">0.00</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perfil de Dansereau -->
+        <div class="mt-10">
+            <h2 class="font-bold mb-4 text-lg text-gray-700">Perfil Estructural (Dansereau)</h2>
+            <div class="perfil-container rounded-t-lg overflow-hidden" id="perfil">
+                <div class="estrato" style="top: 20%;">20m - Emergente</div>
+                <div class="estrato" style="top: 50%;">10m - Dosel Medio</div>
+                <div class="estrato" style="top: 80%;">2m - Arbustivo</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function agregarFila() {
+            const div = document.createElement('div');
+            div.className = "flex gap-2 mb-2";
+            div.innerHTML = `
+                <input type="text" placeholder="Nombre Especie" class="nombre-sp border p-2 rounded w-1/2">
+                <input type="number" placeholder="Cant." class="cant-sp border p-2 rounded w-1/4">
+                <select class="tipo-sp border p-2 rounded w-1/4">
+                    <option value="T">Árbol (T)</option>
+                    <option value="F">Arbusto (F)</option>
+                    <option value="H">Hierba (H)</option>
+                </select>
+            `;
+            document.getElementById('inputs').appendChild(div);
+        }
+
+        function simular() {
+            const nombres = document.querySelectorAll('.nombre-sp');
+            const cants = document.querySelectorAll('.cant-sp');
+            const tipos = document.querySelectorAll('.tipo-sp');
+            const perfil = document.getElementById('perfil');
+            perfil.querySelectorAll('.planta').forEach(p => p.remove());
+
+            let N = 0;
+            let especies = [];
+            
+            cants.forEach((c, i) => {
+                let n = parseInt(c.value) || 0;
+                if (n > 0) {
+                    N += n;
+                    especies.push({ nombre: nombres[i].value, n: n, tipo: tipos[i].value });
+                }
+            });
+
+            // Cálculos
+            let S = especies.length;
+            let D = 0;
+            especies.forEach(sp => {
+                let pi = sp.n / N;
+                D += Math.pow(pi, 2);
+            });
+            let E = (1/D) / S;
+
+            // Actualizar UI
+            document.getElementById('res-s').innerText = S;
+            document.getElementById('res-n').innerText = N;
+            document.getElementById('res-d').innerText = D.toFixed(3);
+            document.getElementById('res-e').innerText = E.toFixed(3);
+
+            // Dibujar Perfil
+            especies.forEach((sp, idx) => {
+                // Dibujamos una representación proporcional (máximo 15 figuras)
+                let numFiguras = Math.min(sp.n, 10); 
+                for(let j=0; j<numFiguras; j++) {
+                    const el = document.createElement('div');
+                    el.className = "planta";
+                    let altura = sp.tipo === 'T' ? '80%' : (sp.tipo === 'F' ? '40%' : '10%');
+                    let icono = sp.tipo === 'T' ? '🌳' : (sp.tipo === 'F' ? '🌿' : '🌱');
+                    let color = sp.tipo === 'T' ? '#2f855a' : (sp.tipo === 'F' ? '#48bb78' : '#68d391');
+                    
+                    el.style.left = Math.random() * 90 + '%';
+                    el.style.height = altura;
+                    el.style.fontSize = sp.tipo === 'T' ? '40px' : '20px';
+                    el.innerHTML = icono;
+                    perfil.appendChild(el);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
