@@ -51,4 +51,230 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
     </style>
-</
+</head>
+<body class="bg-slate-100 p-4 md:p-8 font-sans">
+
+    <!-- DEFINICIÓN DE PATRONES SVG PARA TEXTURAS -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <pattern id="patron-cuadros" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.3" opacity="0.4"/>
+            </pattern>
+            <pattern id="patron-rayas" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="5" stroke="black" stroke-width="0.5" opacity="0.4" />
+            </pattern>
+            <pattern id="patron-puntos" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="0.5" fill="black" opacity="0.4"/>
+            </pattern>
+        </defs>
+    </svg>
+
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+        
+        <!-- HEADER INSTITUCIONAL -->
+        <header class="bg-emerald-900 p-8 text-white">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-3xl font-black tracking-tight uppercase leading-tight">Cátedra de Ética y Sostenibilidad Ambiental</h1>
+                    <p class="text-emerald-300 font-bold text-lg">FCA - Universidad Nacional de Jujuy (UNJu)</p>
+                    <div class="h-1.5 w-24 bg-amber-500 mt-3 mx-auto md:mx-0 rounded-full"></div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="cargarFichaA()" class="bg-emerald-700 hover:bg-emerald-600 px-6 py-3 rounded-xl font-bold transition shadow-lg border border-emerald-500/30 text-sm">FICHA A: BOSQUE NATIVO</button>
+                    <button onclick="cargarFichaB()" class="bg-amber-700 hover:bg-amber-600 px-6 py-3 rounded-xl font-bold transition shadow-lg border border-amber-500/30 text-sm">FICHA B: MONOCULTIVO</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4">
+            <!-- PANEL IZQUIERDO: INVENTARIO -->
+            <div class="p-6 bg-slate-50 border-r border-slate-100">
+                <h3 class="text-slate-500 font-black text-[10px] uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span> Inventario Estructural
+                </h3>
+                
+                <div id="inputs" class="space-y-4 max-h-[480px] overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Las filas se generan aquí -->
+                </div>
+                
+                <div class="mt-6 space-y-3">
+                    <button onclick="agregarFila()" class="w-full py-3 text-emerald-700 font-bold border-2 border-dashed border-emerald-200 rounded-2xl hover:bg-emerald-50 transition text-sm">+ Agregar Especie</button>
+                    <button onclick="procesar()" class="w-full bg-emerald-950 text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:bg-black transition transform active:scale-95">Generar Perfil Visual</button>
+                </div>
+            </div>
+
+            <!-- PANEL DERECHO: SIMULADOR GRÁFICO -->
+            <div class="lg:col-span-3 p-6 md:p-10">
+                <div class="perfil-container rounded-2xl" id="canvas">
+                    <!-- Guías de altura -->
+                    <div class="estrato-line" style="bottom: 90%;">25m - EMERGENTES</div>
+                    <div class="estrato-line" style="bottom: 72%;">18m - DOSEL SUPERIOR</div>
+                    <div class="estrato-line" style="bottom: 48%;">10m - ESTRATO MEDIO</div>
+                    <div class="estrato-line" style="bottom: 28%;">5m - ARBUSTIVO</div>
+                    <div class="estrato-line" style="bottom: 8%;">1m - HERBÁCEO</div>
+                </div>
+
+                <!-- DASHBOARD DE RESULTADOS (ÍNDICES) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                        <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Riqueza (S)</span>
+                        <span id="res-s" class="text-4xl font-black text-slate-800">0</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+                        <span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Individuos (N)</span>
+                        <span id="res-n" class="text-4xl font-black text-slate-800">0</span>
+                    </div>
+                    <div class="bg-rose-50 p-5 rounded-2xl shadow-sm border border-rose-100 text-center">
+                        <span class="block text-[10px] font-black text-rose-400 uppercase tracking-widest mb-1">Dominancia (D)</span>
+                        <span id="res-d" class="text-4xl font-black text-rose-600">0.00</span>
+                    </div>
+                    <div class="bg-emerald-50 p-5 rounded-2xl shadow-sm border border-emerald-100 text-center">
+                        <span class="block text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Equidad (E)</span>
+                        <span id="res-e" class="text-4xl font-black text-emerald-700">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="bg-slate-900 text-slate-500 p-5 text-center text-[10px] font-bold tracking-[0.2em] uppercase">
+            Simbología Técnica Basada en Pierre Dansereau | Cátedra de Ética y Sostenibilidad Ambiental - FCA UNJu
+        </footer>
+    </div>
+
+<script>
+// CONFIGURACIÓN DE LA SIMBOLOGÍA TÉCNICA
+const ESTRATOS_DATA = {
+    'EME': { h: 90, size: 55, shape: 'circle', fill: 'patron-cuadros', colorClass: 'c-EME', tronco: true },
+    'DOS': { h: 72, size: 48, shape: 'circle', fill: 'patron-rayas', colorClass: 'c-DOS', tronco: true },
+    'MED': { h: 48, size: 40, shape: 'circle', fill: 'patron-puntos', colorClass: 'c-MED', tronco: true },
+    'ARB': { h: 28, size: 32, shape: 'triangle', fill: 'patron-puntos', colorClass: 'c-ARB', tronco: false },
+    'HER': { h: 8,  size: 22, shape: 'semicircle', fill: 'patron-rayas', colorClass: 'c-HER', tronco: false },
+    'APO': { h: 55, size: 20, shape: 'star', fill: 'patron-cuadros', colorClass: 'c-APO', tronco: false },
+    'CON': { h: 80, size: 24, shape: 'diamond', fill: 'patron-rayas', colorClass: 'c-CON', tronco: false }
+};
+
+// FUNCIÓN PARA GENERAR EL SVG DEL SÍMBOLO
+function getSVG(tipo) {
+    const d = ESTRATOS_DATA[tipo];
+    const s = d.size;
+    let forma = "";
+    
+    if(d.shape === 'circle') forma = `<circle cx="${s/2}" cy="${s/2}" r="${s/2 - 2}" />`;
+    if(d.shape === 'triangle') forma = `<path d="M ${s/2} 0 L ${s} ${s} L 0 ${s} Z" />`;
+    if(d.shape === 'semicircle') forma = `<path d="M 0 ${s} A ${s/2} ${s/2} 0 0 1 ${s} ${s} Z" />`;
+    if(d.shape === 'star') forma = `<path d="M ${s/2} 0 L ${s*0.7} ${s} L 0 ${s*0.4} L ${s} ${s*0.4} L ${s*0.3} ${s} Z" />`;
+    if(d.shape === 'diamond') forma = `<path d="M ${s/2} 0 L ${s} ${s/2} L ${s/2} ${s} L 0 ${s/2} Z" />`;
+
+    return `<svg width="${s}" height="${s}" class="svg-dansereau ${d.colorClass}">
+                <g fill="url(#${d.fill})">${forma}</g>
+                <g fill="none">${forma}</g>
+            </svg>`;
+}
+
+// AGREGAR FILA AL INVENTARIO
+function agregarFila(nombre='', cantidad='', tipo='HER') {
+    const contenedor = document.getElementById('inputs');
+    const div = document.createElement('div');
+    div.className = "bg-white p-4 rounded-2xl shadow-sm border border-slate-200";
+    div.innerHTML = `
+        <div class="flex flex-col gap-2">
+            <input type="text" value="${nombre}" placeholder="Especie..." class="n-sp font-black text-slate-700 text-[11px] border-b border-slate-100 outline-none focus:border-emerald-500 uppercase tracking-tight">
+            <div class="flex items-center gap-2">
+                <input type="number" value="${cantidad}" class="c-sp w-14 text-xs font-bold bg-slate-50 border border-slate-200 rounded-lg p-1.5" placeholder="Cant">
+                <select class="t-sp flex-1 text-[9px] font-black uppercase bg-slate-50 border border-slate-200 rounded-lg p-1.5 outline-none">
+                    <option value="EME" ${tipo==='EME'?'selected':''}>Emergente</option>
+                    <option value="DOS" ${tipo==='DOS'?'selected':''}>Dosel Alto</option>
+                    <option value="MED" ${tipo==='MED'?'selected':''}>E. Medio</option>
+                    <option value="ARB" ${tipo==='ARB'?'selected':''}>Arbustivo/Caña</option>
+                    <option value="HER" ${tipo==='HER'?'selected':''}>Herbáceo</option>
+                    <option value="APO" ${tipo==='APO'?'selected':''}>Epífita</option>
+                    <option value="CON" ${tipo==='CON'?'selected':''}>Liana</option>
+                </select>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-rose-200 hover:text-rose-600 transition p-1">✕</button>
+            </div>
+        </div>`;
+    contenedor.prepend(div);
+}
+
+// PROCESAR DATOS Y GENERAR GRÁFICO
+function procesar() {
+    const canvas = document.getElementById('canvas');
+    canvas.querySelectorAll('.simbolo-dansereau').forEach(el => el.remove());
+
+    const cants = document.querySelectorAll('.c-sp');
+    const tipos = document.querySelectorAll('.t-sp');
+
+    let totalN = 0; 
+    let especies = [];
+    
+    cants.forEach((c, i) => {
+        let val = parseInt(c.value) || 0;
+        if(val > 0) { 
+            totalN += val; 
+            especies.push({ n: val, t: tipos[i].value }); 
+        }
+    });
+
+    // Índices de Diversidad
+    let S = especies.length;
+    let D = totalN > 0 ? especies.reduce((acc, sp) => acc + Math.pow(sp.n/totalN, 2), 0) : 0;
+    let E = S > 1 ? (1/D) / S : (S === 1 ? 1.00 : 0.00);
+
+    // Actualizar Dashboard
+    document.getElementById('res-s').innerText = S;
+    document.getElementById('res-n').innerText = totalN;
+    document.getElementById('res-d').innerText = D.toFixed(3);
+    document.getElementById('res-e').innerText = E.toFixed(2);
+
+    // Renderizar Símbolos en el Perfil
+    especies.forEach(sp => {
+        let visLimit = Math.min(sp.n, 12); // Límite visual para no saturar el gráfico
+        const data = ESTRATOS_DATA[sp.t];
+        
+        for(let i=0; i<visLimit; i++) {
+            const wrap = document.createElement('div');
+            wrap.className = "simbolo-dansereau";
+            wrap.style.left = (Math.random() * 90 + 5) + "%";
+            wrap.style.height = data.h + "%";
+            
+            if(data.tronco) {
+                const tr = document.createElement('div');
+                tr.className = "tronco-tecnico";
+                tr.style.height = "100%";
+                wrap.appendChild(tr);
+            }
+
+            const icon = document.createElement('div');
+            icon.innerHTML = getSVG(sp.t);
+            icon.style.transform = `translateY(50%)`;
+            wrap.appendChild(icon);
+            canvas.appendChild(wrap);
+        }
+    });
+}
+
+// FUNCIONES DE CARGA DE FICHAS PREESTABLECIDAS
+function cargarFichaA() {
+    document.getElementById('inputs').innerHTML = '';
+    agregarFila('Cebil Colorado', 5, 'EME');
+    agregarFila('Tipa Blanca', 4, 'DOS');
+    agregarFila('Lanza Blanca', 8, 'MED');
+    agregarFila('Arbustos Nativos', 10, 'ARB');
+    agregarFila('Helechos varios', 20, 'HER');
+    agregarFila('Orquídeas', 6, 'APO');
+    agregarFila('Lianas', 4, 'CON');
+    procesar();
+}
+
+function cargarFichaB() {
+    document.getElementById('inputs').innerHTML = '';
+    agregarFila('Caña de Azúcar (Cultivo)', 180, 'ARB');
+    agregarFila('Gramilla (Maleza)', 15, 'HER');
+    procesar();
+}
+
+// Inicialización
+agregarFila();
+</script>
+</body>
+</html>
