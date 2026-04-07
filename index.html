@@ -2,129 +2,97 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil Dansereau: Simbología Estructural Abstracta</title>
+    <title>Perfil Estructural de Dansereau</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --suelo: #424242; --cielo: #f8fafc; }
-        
-        .dansereau-canvas { 
-            height: 520px; 
-            background: linear-gradient(to bottom, var(--cielo), #ffffff);
-            position: relative;
-            border-bottom: 25px solid var(--suelo);
+        :root { --linea: #1a1a1a; }
+        .canvas-perfil { 
+            height: 500px; background: white; position: relative;
+            border-bottom: 2px solid var(--linea); border-left: 2px solid var(--linea);
             overflow: hidden;
-            border-radius: 20px 20px 0 0;
-            border: 2px solid #e2e8f0;
         }
-
-        /* Guías de Escala */
-        .escala-v {
-            position: absolute;
-            left: 0; width: 100%;
-            border-top: 1px dashed #cbd5e1;
-            z-index: 1;
-            pointer-events: none;
-            display: flex; align-items: center;
-            padding-left: 10px; color: #94a3b8;
-            font-size: 10px; font-weight: bold;
+        .guia-h {
+            position: absolute; left: 0; width: 100%; border-top: 1px dashed #ddd;
+            font-size: 10px; color: #999; padding: 2px 0 0 5px; z-index: 1;
         }
-
-        /* Elemento base para el símbolo */
         .simbolo-dansereau {
-            position: absolute;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 2;
-            transition: all 0.5s ease;
+            position: absolute; display: flex; flex-direction: column;
+            align-items: center; z-index: 2; transition: all 0.4s;
         }
-
-        /* Estilos de los Símbolos Vectoriales (SVG) */
-        .dansereau-svg {
-            position: absolute;
-            bottom: 0;
-            fill: none;
-            stroke: #1a1a1a;
-            stroke-width: 1.5;
-        }
-
-        .patron-cuadricula { fill: url(#cuadricula); }
-        .patron-rayas { fill: url(#rayas); }
-        .patron-puntos { fill: url(#puntos); }
-
+        .tronco-fino { width: 1px; background: var(--linea); position: absolute; bottom: 0; }
+        
+        /* Estilos para los rellenos SVG */
+        .svg-shape { stroke: var(--linea); stroke-width: 1.5; }
+        .fill-grid { fill: url(#grid); }
+        .fill-lines { fill: url(#lines); }
+        .fill-dots { fill: url(#dots); }
     </style>
 </head>
-<body class="bg-slate-100 p-4 md:p-8">
+<body class="bg-gray-100 p-8">
 
+    <!-- Definición de Patrones de Relleno -->
     <svg width="0" height="0">
         <defs>
-            <pattern id="cuadricula" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+            <pattern id="grid" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.5"/>
             </pattern>
-            <pattern id="rayas" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <rect width="8" height="8" fill="none"/>
-                <path d="M 0 4 H 8" stroke="#1a1a1a" stroke-width="1.5"/>
+            <pattern id="lines" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="5" stroke="black" stroke-width="1" />
             </pattern>
-            <pattern id="puntos" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                <circle cx="4" cy="4" r="1.5" fill="#1a1a1a"/>
+            <pattern id="dots" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="black"/>
             </pattern>
         </defs>
     </svg>
 
-    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-        
-<div class="bg-emerald-950 p-6 text-white flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-black tracking-tight">Simulador Estructural: Perfil de Dansereau</h1>
-                <p class="text-emerald-300 text-sm opacity-80">Simbología Abstracta - Modelo UNJu v3.1</p>
-            </div>
-            <button onclick="dibujarPerfil()" class="bg-emerald-600 hover:bg-black text-white px-6 py-3 rounded-2xl font-black shadow-lg transition">ACTUALIZAR PERFIL VISUAL</button>
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden">
+        <div class="bg-slate-900 p-5 text-white flex justify-between items-center">
+            <h2 class="font-bold text-lg tracking-tight uppercase">Simulador: Perfil de Dansereau (Simbología)</h2>
+            <button onclick="dibujar()" class="bg-emerald-600 px-8 py-2 rounded-lg font-bold hover:bg-emerald-500 transition">GENERAR GRÁFICO</button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-0">
-            
-<div class="p-6 border-r border-slate-100 bg-slate-50">
-                <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">📊 Inventario (Abstracto)</h3>
-                <div id="lista-inventario" class="space-y-3 mb-6 max-h-[420px] overflow-y-auto pr-2"></div>
-                <button onclick="agregarNuevaEspecie()" class="w-full py-2 mb-4 border-2 border-dashed border-emerald-300 text-emerald-700 rounded-xl text-xs font-bold hover:bg-emerald-50 transition">+ NUEVA ESPECIE</button>
+        <div class="grid grid-cols-12">
+            <!-- PANEL DE ENTRADA -->
+            <div class="col-span-4 p-5 bg-slate-50 border-r border-slate-200" id="panel-especies">
+                <h3 class="text-xs font-bold text-slate-500 mb-4 uppercase">Datos de Campo</h3>
+                <div id="inputs" class="space-y-3 mb-4"></div>
+                <button onclick="addEspecie()" class="w-full py-2 border-2 border-dashed border-slate-300 text-slate-500 rounded-lg text-xs font-bold hover:bg-white">+ AÑADIR ESPECIE</button>
             </div>
 
-            
-<div class="lg:col-span-3 p-6">
-                <div class="dansereau-canvas mb-6" id="simulador">
-                    <div class="escala-v" style="bottom: 90%;">25m - EMERGENTES</div>
-                    <div class="escala-v" style="bottom: 72%;">18m - DOSEL ALTO</div>
-                    <div class="escala-v" style="bottom: 48%;">12m - MEDIO</div>
-                    <div class="escala-v" style="bottom: 28%;">5m - ARBUSTIVO / CAÑA</div>
-                    <div class="escala-v" style="bottom: 8%;">1m - HERBÁCEO</div>
+            <!-- ÁREA DEL PERFIL -->
+            <div class="col-span-8 p-8 bg-white">
+                <div class="canvas-perfil" id="canvas">
+                    <div class="guia-h" style="bottom: 90%">25m - EMERGENTE</div>
+                    <div class="guia-h" style="bottom: 72%">18m - DOSEL ALTO</div>
+                    <div class="guia-h" style="bottom: 48%">12m - E. MEDIO</div>
+                    <div class="guia-h" style="bottom: 28%">5m - ARBUSTIVO</div>
+                    <div class="guia-h" style="bottom: 8%">1m - HERBÁCEO</div>
                 </div>
-
                 
-<div class="grid grid-cols-4 gap-4 text-center">
-                    <div class="bg-white p-3 rounded-2xl border"><p class="text-[10px] text-slate-400 font-bold uppercase">Riqueza (S)</p><p id="v-s" class="text-3xl font-black">0</p></div>
-                    <div class="bg-white p-3 rounded-2xl border"><p class="text-[10px] text-slate-400 font-bold uppercase">Total (N)</p><p id="v-n" class="text-3xl font-black">0</p></div>
-                    <div class="bg-rose-50 p-3 rounded-2xl border-rose-100"><p class="text-[10px] text-rose-400 font-bold uppercase">Dominancia (D)</p><p id="v-d" class="text-3xl font-black text-rose-700">0.00</p></div>
-                    <div class="bg-sky-50 p-3 rounded-2xl border-sky-100"><p class="text-[10px] text-sky-400 font-bold uppercase">Equidad (E)</p><p id="v-e" class="text-3xl font-black text-sky-700">0.00</p></div>
+                <div class="flex justify-between mt-6 text-center">
+                    <div class="flex-1 border-r"><p class="text-[10px] font-bold text-slate-400 uppercase">Riqueza (S)</p><p id="s-val" class="text-2xl font-black">0</p></div>
+                    <div class="flex-1 border-r"><p class="text-[10px] font-bold text-slate-400 uppercase">Dominancia (D)</p><p id="d-val" class="text-2xl font-black text-rose-600">0.00</p></div>
+                    <div class="flex-1"><p class="text-[10px] font-bold text-slate-400 uppercase">Equidad (E)</p><p id="e-val" class="text-2xl font-black text-sky-600">0.00</p></div>
                 </div>
             </div>
         </div>
     </div>
 
 <script>
-// CONFIGURACIÓN DE LOS SÍMBOLOS SEGÚN DANSEREAU
-const SIMBOLOGIA = {
-    'EME': { h: 90, size: 70, shape: 'circle-grid', tronco: true }, 
-    'DOS': { h: 72, size: 55, shape: 'circle-grid', tronco: true }, 
-    'MED': { h: 48, size: 45, shape: 'circle-rayas', tronco: true }, 
-    'ARB': { h: 28, size: 35, shape: 'triangle-puntos', tronco: false }, 
-    'HER': { h: 8, size: 22, shape: 'semicircle-rayas', tronco: false },
-    'APO': { h: 60, size: 20, shape: 'star-cuadricula', tronco: false }
+// Lógica de Simbología Abstracta
+const ESTRATOS = {
+    'EME': { h: 90, s: 50, shape: 'circle', fill: 'fill-grid', tronco: true },
+    'DOS': { h: 72, s: 45, shape: 'circle', fill: 'fill-grid', tronco: true },
+    'MED': { h: 48, s: 40, shape: 'circle', fill: 'fill-lines', tronco: true },
+    'ARB': { h: 28, s: 30, shape: 'triangle', fill: 'fill-dots', tronco: false },
+    'HER': { h: 8, s: 20, shape: 'semicircle', fill: 'fill-lines', tronco: false }
 };
 
-function agregarNuevaEspecie(nom='', cant='', est='HER') {
-    const cont = document.getElementById('lista-inventario');
+function addEspecie(n='', c='', e='HER') {
     const div = document.createElement('div');
-    div.className = "bg-white p-3 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-1.5";
+    div.className = "bg-white p-3 rounded-lg border shadow-sm flex flex-col gap-2";
     div.innerHTML = `
-        <input type="text" value="${nom}" placeholder="Especie
+        <input type="text" value="${n}" placeholder="Especie" class="i-nom font-bold text-xs outline-none uppercase border-b border-slate-100">
+        <div class="flex gap-2 items-center">
+            <input type="number" value="${c}" placeholder="N" class="i-can w-14 text-xs border rounded p-1">
+            <select class="i-est flex-1 text-[10px] font-bold border rounded p-1 bg-slate-5
