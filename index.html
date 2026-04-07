@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Biodiversidad - Modelo Dansereau</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -22,56 +21,42 @@
             padding-left: 10px; 
             z-index: 1; 
         }
+        /* CORRECCIÓN AQUÍ: Los iconos se alinean al inicio (arriba) de su contenedor de altura */
         .planta { 
             position: absolute; 
             bottom: 0; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: flex-end; 
+            justify-content: flex-start; 
             z-index: 2; 
-            transition: all 0.5s ease-out;
         }
-        /* Animación simple para que los iconos no aparezcan de golpe */
-        @keyframes pop {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-        .planta span { animation: pop 0.3s ease-out; }
+        .planta span { display: block; line-height: 1; }
     </style>
 </head>
-<body class="bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
+<body class="bg-slate-50 p-6">
 
-    <div class="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-3xl shadow-2xl border border-slate-200">
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-emerald-100 pb-8 mb-8 gap-6">
+    <div class="max-w-6xl mx-auto bg-white p-8 rounded-3xl shadow-2xl border border-slate-200">
+        <header class="flex flex-col md:row justify-between mb-8 gap-4 border-b pb-6">
             <div>
-                <h1 class="text-4xl font-black text-emerald-900 tracking-tight">Simulador: Perfil de Dansereau</h1>
-                <p class="text-lg text-emerald-700 font-medium">Cátedra de Ética y Sostenibilidad Ambiental</p>
+                <h1 class="text-3xl font-black text-emerald-900">TP3: Biodiversidad</h1>
+                <p class="text-emerald-700">Simulador Estructural (Modelo Dansereau)</p>
             </div>
-            <div class="flex flex-wrap gap-3">
-                <button onclick="cargarFichaA()" class="bg-emerald-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-emerald-700 transition shadow-md">FICHA A: BOSQUE NATIVO</button>
-                <button onclick="cargarFichaB()" class="bg-orange-500 text-white px-5 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-md">FICHA B: CULTIVO CAÑA</button>
+            <div class="flex gap-2">
+                <button onclick="cargarFichaA()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-emerald-700">FICHA A (BOSQUE)</button>
+                <button onclick="cargarFichaB()" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600">FICHA B (CAÑA)</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <!-- Panel Lateral: Inputs -->
-            <div class="space-y-6">
-                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="font-bold text-slate-700 mb-4 flex items-center gap-2">📋 Inventario de Especies</h2>
-                    <div id="inputs" class="space-y-3 max-h-[450px] overflow-y-auto pr-2">
-                        <!-- Las filas se insertan aquí -->
-                    </div>
-                    <button onclick="agregarFila()" class="w-full mt-4 py-2 text-sm font-semibold text-emerald-700 border-2 border-dashed border-emerald-300 rounded-lg hover:bg-emerald-50 transition">+ Añadir Especie</button>
-                </div>
-                
-                <button onclick="procesar()" class="w-full bg-emerald-900 text-white py-4 rounded-2xl font-black text-xl shadow-xl hover:bg-black transition transform active:scale-95">GENERAR PERFIL VISUAL</button>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-1 space-y-4">
+                <div id="inputs" class="space-y-2 max-h-[400px] overflow-y-auto pr-2"></div>
+                <button onclick="agregarFila()" class="w-full py-2 text-xs font-bold border-2 border-dashed border-emerald-200 text-emerald-600 rounded-lg">+ ESPECIE</button>
+                <button onclick="procesar()" class="w-full bg-emerald-900 text-white py-4 rounded-xl font-black shadow-lg">GENERAR PERFIL</button>
             </div>
 
-            <!-- Panel Principal: Gráfico e Índices -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="perfil-container rounded-3xl shadow-inner border-2 border-slate-100" id="canvas">
-                    <!-- Líneas de escala -->
+            <div class="lg:col-span-3">
+                <div class="perfil-container rounded-2xl border shadow-inner mb-6" id="canvas">
                     <div class="estrato-line" style="top: 10%;">25m - Emergente</div>
                     <div class="estrato-line" style="top: 25%;">18m - Dosel</div>
                     <div class="estrato-line" style="top: 45%;">10m - Medio</div>
@@ -79,23 +64,11 @@
                     <div class="estrato-line" style="top: 90%;">1m - Suelo</div>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-2xl border-2 border-slate-100 shadow-sm text-center">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Riqueza (S)</p>
-                        <p id="res-s" class="text-3xl font-black text-slate-800">0</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border-2 border-slate-100 shadow-sm text-center">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Individuos (N)</p>
-                        <p id="res-n" class="text-3xl font-black text-slate-800">0</p>
-                    </div>
-                    <div class="bg-rose-50 p-4 rounded-2xl border-2 border-rose-100 shadow-sm text-center">
-                        <p class="text-xs font-bold text-rose-400 uppercase">Dominancia (D)</p>
-                        <p id="res-d" class="text-3xl font-black text-rose-600">0.00</p>
-                    </div>
-                    <div class="bg-sky-50 p-4 rounded-2xl border-2 border-sky-100 shadow-sm text-center">
-                        <p class="text-xs font-bold text-sky-400 uppercase">Equidad (E)</p>
-                        <p id="res-e" class="text-3xl font-black text-sky-600">0.00</p>
-                    </div>
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div class="bg-slate-50 p-3 rounded-xl border"><p class="text-xs text-slate-400">RIQUEZA (S)</p><p id="res-s" class="text-2xl font-black">0</p></div>
+                    <div class="bg-slate-50 p-3 rounded-xl border"><p class="text-xs text-slate-400">INDIVIDUOS (N)</p><p id="res-n" class="text-2xl font-black">0</p></div>
+                    <div class="bg-rose-50 p-3 rounded-xl border"><p class="text-xs text-rose-400">DOMINANCIA (D)</p><p id="res-d" class="text-2xl font-black text-rose-600">0.00</p></div>
+                    <div class="bg-sky-50 p-3 rounded-xl border"><p class="text-xs text-sky-400">EQUIDAD (E)</p><p id="res-e" class="text-2xl font-black text-sky-600">0.00</p></div>
                 </div>
             </div>
         </div>
@@ -103,54 +76,47 @@
 
 <script>
 const ESTRATOS = {
-    'EME': { h: '90%', icon: '🌲', size: '70px' }, 
-    'DOS': { h: '75%', icon: '🌳', size: '55px' }, 
-    'MED': { h: '55%', icon: '🌴', size: '45px' }, 
-    'ARB': { h: '30%', icon: '🌿', size: '35px' }, 
-    'HER': { h: '10%', icon: '🌱', size: '20px' }, 
-    'APO': { h: '60%', icon: '🌸', size: '25px' }, 
-    'CON': { h: '85%', icon: '🧶', size: '30px' }  
+    'EME': { h: '90%', icon: '🌲', size: '60px' }, 
+    'DOS': { h: '75%', icon: '🌳', size: '50px' }, 
+    'MED': { h: '55%', icon: '🌴', size: '40px' }, 
+    'ARB': { h: '30%', icon: '🌿', size: '30px' }, 
+    'HER': { h: '10%', icon: '🌱', size: '18px' },
+    'APO': { h: '60%', icon: '🌸', size: '20px' },
+    'CON': { h: '85%', icon: '🧶', size: '25px' }
 };
 
-function agregarFila(nombre='', cantidad='', tipo='HER') {
-    const contenedor = document.getElementById('inputs');
+function agregarFila(n='', c='', t='HER') {
     const div = document.createElement('div');
-    div.className = "bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-2";
+    div.className = "bg-slate-50 p-2 rounded border text-xs flex flex-col gap-1";
     div.innerHTML = `
-        <input type="text" value="${nombre}" placeholder="Nombre de Especie" class="n-sp font-bold text-sm outline-none border-b border-transparent focus:border-emerald-400 w-full">
-        <div class="flex justify-between items-center gap-2">
-            <input type="number" value="${cantidad}" placeholder="Cant" class="c-sp text-sm w-16 bg-slate-50 rounded px-2 py-1 outline-none focus:ring-2 focus:ring-emerald-400">
-            <select class="t-sp text-[10px] uppercase font-bold bg-slate-50 rounded px-1 py-1 outline-none w-full">
-                <option value="EME" ${tipo==='EME'?'selected':''}>Emergente (25m)</option>
-                <option value="DOS" ${tipo==='DOS'?'selected':''}>Dosel (18m)</option>
-                <option value="MED" ${tipo==='MED'?'selected':''}>Medio (10m)</option>
-                <option value="ARB" ${tipo==='ARB'?'selected':''}>Arbustivo (5m)</option>
-                <option value="HER" ${tipo==='HER'?'selected':''}>Herbáceo (1m)</option>
-                <option value="APO" ${tipo==='APO'?'selected':''}>Apoyo (Epífita)</option>
-                <option value="CON" ${tipo==='CON'?'selected':''}>Conector (Liana)</option>
+        <input type="text" value="${n}" placeholder="Especie" class="n-sp font-bold bg-transparent outline-none border-b border-slate-200">
+        <div class="flex gap-1">
+            <input type="number" value="${c}" placeholder="Cant" class="c-sp w-12 p-1 border rounded">
+            <select class="t-sp flex-1 p-1 border rounded">
+                <option value="EME" ${t==='EME'?'selected':''}>Emergente</option>
+                <option value="DOS" ${t==='DOS'?'selected':''}>Dosel</option>
+                <option value="MED" ${t==='MED'?'selected':''}>Medio</option>
+                <option value="ARB" ${t==='ARB'?'selected':''}>Arbustivo</option>
+                <option value="HER" ${t==='HER'?'selected':''}>Herbáceo</option>
+                <option value="APO" ${t==='APO'?'selected':''}>Apoyo</option>
+                <option value="CON" ${t==='CON'?'selected':''}>Conector</option>
             </select>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-rose-300 hover:text-rose-600 px-2 font-bold">✕</button>
-        </div>
-    `;
-    contenedor.prepend(div);
+            <button onclick="this.parentElement.parentElement.remove()" class="text-rose-500 font-bold px-1">✕</button>
+        </div>`;
+    document.getElementById('inputs').prepend(div);
 }
 
 function cargarFichaA() {
     document.getElementById('inputs').innerHTML = '';
-    agregarFila('Cebil Colorado', 5, 'EME'); 
-    agregarFila('Tipa Blanca', 4, 'DOS');
-    agregarFila('Lanza Blanca', 8, 'MED');
-    agregarFila('Helechos nativos', 15, 'HER');
-    agregarFila('Orquídeas', 6, 'APO');
-    agregarFila('Lianas', 4, 'CON');
+    agregarFila('Cebil Colorado', 5, 'EME'); agregarFila('Tipa Blanca', 4, 'DOS');
+    agregarFila('Lanza Blanca', 8, 'MED'); agregarFila('Helechos', 15, 'HER');
+    agregarFila('Orquídeas', 6, 'APO'); agregarFila('Lianas', 4, 'CON');
     procesar();
 }
 
 function cargarFichaB() {
     document.getElementById('inputs').innerHTML = '';
-    agregarFila('Caña de Azúcar', 150, 'ARB'); 
-    agregarFila('Gramilla (Maleza)', 12, 'HER');
-    agregarFila('Yuyo Colorado', 5, 'HER');
+    agregarFila('Caña de Azúcar', 120, 'ARB'); agregarFila('Gramilla', 15, 'HER');
     procesar();
 }
 
@@ -158,27 +124,19 @@ function procesar() {
     const canvas = document.getElementById('canvas');
     canvas.querySelectorAll('.planta').forEach(el => el.remove());
 
-    const nombres = document.querySelectorAll('.n-sp');
     const cants = document.querySelectorAll('.c-sp');
     const tipos = document.querySelectorAll('.t-sp');
 
     let N = 0; 
-    let listaEspecies = [];
-    
+    let lista = [];
     cants.forEach((c, i) => {
         let cant = parseInt(c.value) || 0;
-        if(cant > 0) {
-            N += cant;
-            listaEspecies.push({ n: cant, t: tipos[i].value });
-        }
+        if(cant > 0) { N += cant; lista.push({ n: cant, t: tipos[i].value }); }
     });
 
-    let S = listaEspecies.length;
+    let S = lista.length;
     let D = 0;
-    listaEspecies.forEach(sp => { 
-        let pi = sp.n / N;
-        D += Math.pow(pi, 2); 
-    });
+    lista.forEach(sp => { D += Math.pow(sp.n / N, 2); });
     let E = S > 1 ? (1/D) / S : 0;
 
     document.getElementById('res-s').innerText = S;
@@ -186,28 +144,30 @@ function procesar() {
     document.getElementById('res-d').innerText = D.toFixed(3);
     document.getElementById('res-e').innerText = E.toFixed(3);
 
-    listaEspecies.forEach(sp => {
-        // Mostramos un máximo de 40 iconos por especie para representar densidad sin colapsar el navegador
-        let numFigurasVisuales = Math.min(sp.n, 40); 
+    lista.forEach(sp => {
+        let visuales = Math.min(sp.n, 35); 
         const config = ESTRATOS[sp.t];
-
-        for(let i=0; i<numFigurasVisuales; i++) {
+        for(let i=0; i<visuales; i++) {
             const el = document.createElement('div');
             el.className = "planta";
-            el.style.left = (Math.random() * 94 + 3) + '%';
-            el.style.height = config.h; 
+            el.style.left = (Math.random() * 92 + 4) + '%';
+            el.style.height = config.h; // El contenedor llega hasta la línea del estrato
             
-            if(sp.t === 'CON') {
+            // Si es un árbol, dibujamos un tronco visual para que se vea que sube desde el suelo
+            if(['EME', 'DOS', 'MED'].includes(sp.t)) {
+                el.innerHTML = `
+                    <span style="font-size:${config.size}; z-index:2">${config.icon}</span>
+                    <div style="width:4px; height:100%; background:#795548; position:absolute; bottom:0; z-index:1; opacity:0.6"></div>
+                `;
+            } else if(sp.t === 'CON') { // Lianas
                 el.innerHTML = `<div style="height:100%; border-left: 2px dashed #78350f; opacity:0.5"></div><span style="font-size:20px; position:absolute; top:20%">${config.icon}</span>`;
             } else {
-                el.innerHTML = `<span style="font-size:${config.size}; line-height:1;">${config.icon}</span>`;
+                el.innerHTML = `<span style="font-size:${config.size}">${config.icon}</span>`;
             }
             canvas.appendChild(el);
         }
     });
 }
-
-// Iniciar con una fila vacía
 agregarFila();
 </script>
 </body>
