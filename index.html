@@ -2,212 +2,76 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil Estructural Dansereau - Cátedra Ética y Sostenibilidad</title>
+    <title>Cátedra de Ética y Sostenibilidad Ambiental - FCA UNJu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilo del Lienzo Técnico */
+        /* Paleta FCA UNJu y Estética Técnica */
+        :root {
+            --verde-fca: #1b5e20;
+            --verde-claro: #4caf50;
+            --tierra: #5d4037;
+        }
+
         .perfil-container { 
-            height: 520px; 
-            border-bottom: 3px solid #000; 
-            border-left: 3px solid #000;
+            height: 550px; 
+            border-bottom: 5px solid var(--tierra); 
+            border-left: 2px solid #333;
             position: relative; 
-            background: #ffffff; 
+            background: #f8fafc; /* Gris muy tenue para resaltar los colores */
             overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
         
-        /* Líneas de Estratificación */
         .estrato-line { 
-            position: absolute; width: 100%; border-top: 1px dashed #ccc; 
-            font-size: 10px; color: #666; padding-left: 8px; z-index: 1; 
-            text-transform: uppercase; letter-spacing: 1px;
+            position: absolute; width: 100%; border-top: 1px dashed #cbd5e1; 
+            font-size: 11px; color: #64748b; padding-left: 12px; z-index: 1; 
+            font-weight: bold;
         }
 
-        /* Contenedor del Símbolo */
         .simbolo-dansereau { 
             position: absolute; bottom: 0; display: flex; flex-direction: column; 
-            align-items: center; z-index: 2; transition: all 0.5s ease-in-out;
+            align-items: center; z-index: 2; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Tronco Esquemático (Línea de Vida) */
-        .tronco-tecnico { width: 1px; background: #000; position: absolute; bottom: 0; }
+        .tronco-tecnico { width: 2px; background: var(--tierra); opacity: 0.6; position: absolute; bottom: 0; }
 
-        /* Estilos SVG de Dansereau */
-        .svg-dansereau { stroke: #000; stroke-width: 1.2; fill: white; }
-        .p-cuadros { fill: url(#patron-cuadros); }
-        .p-rayas { fill: url(#patron-rayas); }
-        .p-puntos { fill: url(#patron-puntos); }
+        /* Colores Dinámicos por Tipo */
+        .c-EME { fill: #065f46; stroke: #064e3b; } /* Verde Esmeralda Oscuro */
+        .c-DOS { fill: #059669; stroke: #064e3b; } /* Verde Medio */
+        .c-MED { fill: #10b981; stroke: #065f46; } /* Verde Esmeralda */
+        .c-ARB { fill: #b45309; stroke: #78350f; } /* Ambar / Madera */
+        .c-HER { fill: #84cc16; stroke: #3f6212; } /* Lima / Hierba */
+        .c-APO { fill: #d946ef; stroke: #701a75; } /* Magenta (Epífitas) */
+        .c-CON { fill: #6366f1; stroke: #312e81; } /* Indigo (Lianas) */
+
+        .svg-dansereau { stroke-width: 1.5; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); }
     </style>
 </head>
-<body class="bg-gray-50 p-6 font-mono text-sm">
+<body class="bg-slate-100 p-4 md:p-8 font-sans">
 
-    <!-- DEFINICIÓN DE PATRONES DE RELLENO (Simbología Funcional) -->
+    <!-- DEFINICIÓN DE PATRONES -->
     <svg width="0" height="0" style="position: absolute;">
         <defs>
             <pattern id="patron-cuadros" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
-                <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.5"/>
+                <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.3" opacity="0.5"/>
             </pattern>
             <pattern id="patron-rayas" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <line x1="0" y1="0" x2="0" y2="5" stroke="black" stroke-width="1" />
+                <line x1="0" y1="0" x2="0" y2="5" stroke="black" stroke-width="0.5" opacity="0.5"/>
             </pattern>
-            <pattern id="patron-puntos" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="0.8" fill="black"/>
+            <pattern id="patron-puntos" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="0.5" fill="black" opacity="0.5"/>
             </pattern>
         </defs>
     </svg>
 
-    <div class="max-w-7xl mx-auto bg-white p-8 border border-black shadow-sm">
-        <header class="flex justify-between items-center border-b-2 border-black pb-4 mb-8">
-            <div>
-                <h1 class="text-2xl font-bold uppercase">Diagrama Estructural de Dansereau</h1>
-                <p class="text-gray-600">Representación Abstracta de la Comunidad Vegetal</p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="cargarFichaA()" class="border border-black px-4 py-2 hover:bg-black hover:text-white transition uppercase font-bold">Bosque Nativo</button>
-                <button onclick="cargarFichaB()" class="border border-black px-4 py-2 hover:bg-black hover:text-white transition uppercase font-bold">Monocultivo</button>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <!-- INPUTS -->
-            <div class="lg:col-span-1 space-y-4">
-                <div id="inputs" class="space-y-2 max-h-[400px] overflow-y-auto border-b border-black pb-4"></div>
-                <button onclick="agregarFila()" class="w-full py-2 text-xs border border-dashed border-gray-400 hover:bg-gray-100">+ Añadir Especie</button>
-                <button onclick="procesar()" class="w-full bg-black text-white py-3 font-bold uppercase tracking-widest">Generar Perfil</button>
-            </div>
-
-            <!-- GRÁFICO TÉCNICO -->
-            <div class="lg:col-span-3">
-                <div class="perfil-container" id="canvas">
-                    <div class="estrato-line" style="bottom: 90%;">25m - Emergentes</div>
-                    <div class="estrato-line" style="bottom: 72%;">18m - Dosel Superior</div>
-                    <div class="estrato-line" style="bottom: 48%;">10m - Estrato Medio</div>
-                    <div class="estrato-line" style="bottom: 28%;">5m - Arbustivo</div>
-                    <div class="estrato-line" style="bottom: 8%;">1m - Herbáceo</div>
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+        <!-- HEADER INSTITUCIONAL -->
+        <header class="bg-emerald-900 p-8 text-white">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-3xl font-black tracking-tight uppercase">Cátedra de Ética y Sostenibilidad Ambiental</h1>
+                    <p class="text-emerald-300 font-bold text-lg">FCA - Universidad Nacional de Jujuy (UNJu)</p>
+                    <div class="h-1 w-20 bg-amber-500 mt-2 mx-auto md:mx-0"></div>
                 </div>
-
-                <!-- DASHBOARD CIENTÍFICO -->
-                <div class="grid grid-cols-4 border-t-2 border-black mt-4 py-4 text-center">
-                    <div><p class="text-[10px] font-bold text-gray-500 uppercase">Riqueza (S)</p><p id="res-s" class="text-2xl font-bold">0</p></div>
-                    <div><p class="text-[10px] font-bold text-gray-500 uppercase">Individuos (N)</p><p id="res-n" class="text-2xl font-bold">0</p></div>
-                    <div><p class="text-[10px] font-bold text-gray-500 uppercase">Dominancia (D)</p><p id="res-d" class="text-2xl font-bold">0.00</p></div>
-                    <div><p class="text-[10px] font-bold text-gray-500 uppercase">Equidad (E)</p><p id="res-e" class="text-2xl font-bold text-emerald-700">0.00</p></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<script>
-// CONFIGURACIÓN DE SIMBOLOGÍA DANSEREAU
-const SIMBOLOGIA = {
-    'EME': { h: 90, size: 50, shape: 'circle', fill: 'p-cuadros', tronco: true },  // Árbol Caducifolio
-    'DOS': { h: 72, size: 45, shape: 'circle', fill: 'p-rayas', tronco: true },    // Árbol Semiperenne
-    'MED': { h: 48, size: 35, shape: 'circle', fill: 'p-puntos', tronco: true },   // Árbol Perennifolio
-    'ARB': { h: 28, size: 28, shape: 'triangle', fill: 'p-puntos', tronco: false }, // Arbusto Perenne
-    'HER': { h: 8,  size: 20, shape: 'semicircle', fill: 'p-rayas', tronco: false }, // Herbácea
-    'APO': { h: 55, size: 18, shape: 'star', fill: 'p-cuadros', tronco: false },    // Epífita
-    'CON': { h: 80, size: 22, shape: 'diamond', fill: 'p-rayas', tronco: false }    // Liana
-};
-
-function getSVG(tipo) {
-    const s = SIMBOLOGIA[tipo];
-    const size = s.size;
-    let path = "";
-    
-    if(s.shape === 'circle') path = `<circle cx="${size/2}" cy="${size/2}" r="${size/2 - 1}" />`;
-    if(s.shape === 'triangle') path = `<path d="M ${size/2} 0 L ${size} ${size} L 0 ${size} Z" />`;
-    if(s.shape === 'semicircle') path = `<path d="M 0 ${size} A ${size/2} ${size/2} 0 0 1 ${size} ${size} Z" />`;
-    if(s.shape === 'star') path = `<path d="M ${size/2} 0 L ${size*0.7} ${size} L 0 ${size*0.4} L ${size} ${size*0.4} L ${size*0.3} ${size} Z" />`;
-    if(s.shape === 'diamond') path = `<path d="M ${size/2} 0 L ${size} ${size/2} L ${size/2} ${size} L 0 ${size/2} Z" />`;
-
-    return `<svg width="${size}" height="${size}" class="svg-dansereau ${s.fill}">${path}</svg>`;
-}
-
-function agregarFila(nombre='', cantidad='', tipo='HER') {
-    const div = document.createElement('div');
-    div.className = "p-2 border border-gray-200 flex flex-col gap-1 bg-white";
-    div.innerHTML = `
-        <input type="text" value="${nombre}" placeholder="Nombre Especie" class="n-sp font-bold text-[10px] border-b outline-none uppercase">
-        <div class="flex gap-2">
-            <input type="number" value="${cantidad}" class="c-sp w-10 text-[10px] border p-1" placeholder="N">
-            <select class="t-sp text-[9px] border p-1 w-full bg-gray-50 uppercase">
-                <option value="EME" ${tipo==='EME'?'selected':''}>Emergente</option>
-                <option value="DOS" ${tipo==='DOS'?'selected':''}>Dosel</option>
-                <option value="MED" ${tipo==='MED'?'selected':''}>E. Medio</option>
-                <option value="ARB" ${tipo==='ARB'?'selected':''}>Arbustivo</option>
-                <option value="HER" ${tipo==='HER'?'selected':''}>Herbáceo</option>
-                <option value="APO" ${tipo==='APO'?'selected':''}>Epífita</option>
-                <option value="CON" ${tipo==='CON'?'selected':''}>Liana</option>
-            </select>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-black">✕</button>
-        </div>`;
-    document.getElementById('inputs').prepend(div);
-}
-
-function procesar() {
-    const canvas = document.getElementById('canvas');
-    canvas.querySelectorAll('.simbolo-dansereau').forEach(el => el.remove());
-
-    const cants = document.querySelectorAll('.c-sp');
-    const tipos = document.querySelectorAll('.t-sp');
-
-    let N = 0; let especies = [];
-    cants.forEach((c, i) => {
-        let val = parseInt(c.value) || 0;
-        if(val > 0) { N += val; especies.push({ n: val, t: tipos[i].value }); }
-    });
-
-    // Cálculos
-    let S = especies.length;
-    let D = especies.reduce((acc, sp) => acc + Math.pow(sp.n/N, 2), 0);
-    let E = S > 0 ? (1/D) / S : 0;
-
-    document.getElementById('res-s').innerText = S;
-    document.getElementById('res-n').innerText = N;
-    document.getElementById('res-d').innerText = D.toFixed(3);
-    document.getElementById('res-e').innerText = E.toFixed(3);
-
-    // Dibujo Técnico
-    especies.forEach(sp => {
-        let vis = Math.min(sp.n, 12); // Limite de densidad visual
-        const s = SIMBOLOGIA[sp.t];
-        for(let i=0; i<vis; i++) {
-            const wrap = document.createElement('div');
-            wrap.className = "simbolo-dansereau";
-            wrap.style.left = (Math.random() * 94 + 1) + "%";
-            wrap.style.height = s.h + "%";
-            
-            if(s.tronco) {
-                const tr = document.createElement('div');
-                tr.className = "tronco-tecnico";
-                tr.style.height = "100%";
-                wrap.appendChild(tr);
-            }
-
-            const icon = document.createElement('div');
-            icon.innerHTML = getSVG(sp.t);
-            icon.style.transform = `translateY(50%)`;
-            wrap.appendChild(icon);
-            canvas.appendChild(wrap);
-        }
-    });
-}
-
-// Fichas Automáticas
-function cargarFichaA() {
-    document.getElementById('inputs').innerHTML = '';
-    agregarFila('Cebil', 5, 'EME'); agregarFila('Tipa', 4, 'DOS');
-    agregarFila('Lanza', 8, 'MED'); agregarFila('Helechos', 15, 'HER');
-    agregarFila('Lianas', 4, 'CON'); procesar();
-}
-
-function cargarFichaB() {
-    document.getElementById('inputs').innerHTML = '';
-    agregarFila('Caña de Azúcar', 150, 'ARB');
-    agregarFila('Maleza', 10, 'HER');
-    procesar();
-}
-
-agregarFila();
-</script>
-</body>
-</html>
+                <div class="flex gap-3">
+                    <button onclick="cargarFichaA()" class="bg-emerald-700 hover:bg-emerald-600 px-6 py-3 rounded-xl font-bold transition shadow-lg border border-emerald-500/30">Ficha A: BOSQUE NATIVO</button>
