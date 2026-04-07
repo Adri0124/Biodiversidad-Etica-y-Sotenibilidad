@@ -17,7 +17,7 @@
             border-bottom: 5px solid var(--tierra); 
             border-left: 2px solid #333;
             position: relative; 
-            background: #f8fafc; /* Gris muy tenue para resaltar los colores */
+            background: #f8fafc; 
             overflow: hidden;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
@@ -35,43 +35,20 @@
 
         .tronco-tecnico { width: 2px; background: var(--tierra); opacity: 0.6; position: absolute; bottom: 0; }
 
-        /* Colores Dinámicos por Tipo */
-        .c-EME { fill: #065f46; stroke: #064e3b; } /* Verde Esmeralda Oscuro */
-        .c-DOS { fill: #059669; stroke: #064e3b; } /* Verde Medio */
-        .c-MED { fill: #10b981; stroke: #065f46; } /* Verde Esmeralda */
-        .c-ARB { fill: #b45309; stroke: #78350f; } /* Ambar / Madera */
-        .c-HER { fill: #84cc16; stroke: #3f6212; } /* Lima / Hierba */
-        .c-APO { fill: #d946ef; stroke: #701a75; } /* Magenta (Epífitas) */
-        .c-CON { fill: #6366f1; stroke: #312e81; } /* Indigo (Lianas) */
+        /* Colores Dinámicos por Tipo de Planta */
+        .c-EME { fill: #065f46; stroke: #064e3b; } /* Emergente */
+        .c-DOS { fill: #059669; stroke: #064e3b; } /* Dosel */
+        .c-MED { fill: #10b981; stroke: #065f46; } /* Medio */
+        .c-ARB { fill: #b45309; stroke: #78350f; } /* Arbustivo */
+        .c-HER { fill: #84cc16; stroke: #3f6212; } /* Herbáceo */
+        .c-APO { fill: #d946ef; stroke: #701a75; } /* Epífita */
+        .c-CON { fill: #6366f1; stroke: #312e81; } /* Liana */
 
         .svg-dansereau { stroke-width: 1.5; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); }
+        
+        /* Scrollbar estética para el inventario */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
     </style>
-</head>
-<body class="bg-slate-100 p-4 md:p-8 font-sans">
-
-    <!-- DEFINICIÓN DE PATRONES -->
-    <svg width="0" height="0" style="position: absolute;">
-        <defs>
-            <pattern id="patron-cuadros" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
-                <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.3" opacity="0.5"/>
-            </pattern>
-            <pattern id="patron-rayas" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                <line x1="0" y1="0" x2="0" y2="5" stroke="black" stroke-width="0.5" opacity="0.5"/>
-            </pattern>
-            <pattern id="patron-puntos" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="0.5" fill="black" opacity="0.5"/>
-            </pattern>
-        </defs>
-    </svg>
-
-    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-        <!-- HEADER INSTITUCIONAL -->
-        <header class="bg-emerald-900 p-8 text-white">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-center md:text-left">
-                    <h1 class="text-2xl md:text-3xl font-black tracking-tight uppercase">Cátedra de Ética y Sostenibilidad Ambiental</h1>
-                    <p class="text-emerald-300 font-bold text-lg">FCA - Universidad Nacional de Jujuy (UNJu)</p>
-                    <div class="h-1 w-20 bg-amber-500 mt-2 mx-auto md:mx-0"></div>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="cargarFichaA()" class="bg-emerald-700 hover:bg-emerald-600 px-6 py-3 rounded-xl font-bold transition shadow-lg border border-emerald-500/30">Ficha A: BOSQUE NATIVO</button>
+</
